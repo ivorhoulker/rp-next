@@ -4,13 +4,21 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { getGithubPreviewProps, parseJson } from "next-tinacms-github";
 import { GetStaticProps } from "next";
+import { usePlugin } from "tinacms";
+import {
+  useGithubJsonForm,
+  useGithubToolbarPlugins,
+} from "react-tinacms-github";
+import { GitFile } from "react-tinacms-github/dist/src/form/useGitFileSha";
 
-export default function Home({
-  file,
-}: {
-  file: { fileRelativePath: string; data: { title: string } };
-}) {
-  const data = file.data;
+export default function Home({ file }: { file: GitFile<any> }) {
+  const formOptions = {
+    label: "Home Page",
+    fields: [{ name: "title", component: "text" }],
+  };
+  const [data, form] = useGithubJsonForm(file, formOptions);
+  usePlugin(form);
+  useGithubToolbarPlugins();
   const router = useRouter();
   const { locale, locales, defaultLocale } = router;
 
